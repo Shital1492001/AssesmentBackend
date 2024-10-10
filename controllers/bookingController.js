@@ -1,6 +1,5 @@
-const asyncHandler = require('express-async-handler'); 
 const BookingModel = require('../models/Booking'); 
-
+const moment = require('moment');
 
 const getAllBookings = async (req, res) => {
     try {
@@ -148,27 +147,58 @@ const updateBooking = async (req, res) => {
     }
   };
 
-async function searchBookingsByYear(year){
-  try{
-    const bookings = await BookingModel.aggregate([
-      {
-        $addFields:{
-          bookingYear:{$year:"$timeFrom"}
-        }
-      },
-      {
-        $match:{bookingYear:year}
-      }
-      // {
-      //   $project:{bookingYear:0}
-      // }
-    ]).explain();
-    return bookings;
-  }
-  catch(error){
-    console.log("Error Searching bookings by year:",error)
-  }
-}
+//   const getWeeklyStats = async (req, res) => {
+//     try {
+//         const currentDate = moment();
+//         const weekStart = currentDate.startOf('week').toDate();
+//         const weekEnd = currentDate.endOf('week').toDate();
+
+//         const weeklyBookings = await BookingModel.find({
+//             userId: req.user._id,
+//             timeFrom: { $gte: weekStart, $lte: weekEnd },
+//         });
+
+//         // Check if any bookings were found
+//         if (!weeklyBookings || weeklyBookings.length === 0) {
+//             return res.status(404).json({
+//                 message: 'No bookings found for this week',
+//                 data: [],
+//             });
+//         }
+
+//         res.status(200).json({
+//             message: 'Weekly bookings fetched successfully',
+//             data: weeklyBookings,
+//         });
+//     } catch (error) {
+//         console.error(`Error fetching weekly stats: ${error.message}`);
+//         return res.status(500).json({
+//             message: 'Server error',
+//             error: error.message,
+//         });
+//     }
+// };
 
 
-module.exports = { getAllBookings,createBooking,updateBooking,searchBookingsByYear,DeleteBookings };
+// const getMonthlyStats = async (req, res) => {
+//     try {
+//         const currentDate = moment();
+//         const monthStart = currentDate.startOf('month').toDate();
+//         const monthEnd = currentDate.endOf('month').toDate();
+
+//         const monthlyBookings = await BookingModel.find({
+//             userId: req.user._id,
+//             timeFrom: { $gte: monthStart, $lte: monthEnd },
+//         });
+
+//         res.status(200).json({
+//             message: 'Monthly bookings fetched successfully',
+//             data: monthlyBookings,
+//         });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server error', error });
+//     }
+// };
+
+
+module.exports = { getAllBookings,createBooking,updateBooking,DeleteBookings };
