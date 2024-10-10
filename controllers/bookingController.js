@@ -12,7 +12,8 @@ const getAllBookings = async (req, res) => {
               { 
                 success: false,
                 StatusCode:404,
-                message: 'No bookings available' 
+                message: 'No bookings available',
+                bookings:bookings 
               });
         }
 
@@ -105,12 +106,12 @@ const updateBooking = async (req, res) => {
 
 
   const DeleteBookings = async (req, res) => {
-    console.log(req);
+    // console.log(req);
     const { _id } = req.params;  
     const deletes = req.body;   
-  
+    // console.log(deletes)
     console.log(`Received ID: ${_id}`);
-    console.log(`Deletes: ${JSON.stringify(deletes)}`);
+    // console.log(`Deletes: ${JSON.stringify(deletes)}`);
   
     
     const booking = await BookingModel.findById(_id);
@@ -128,15 +129,15 @@ const updateBooking = async (req, res) => {
     console.log(result);
   
     console.log(`Delete result: ${JSON.stringify(result)}`);
-  
+    console.log(result.deletedCount)
     // Check if any document was modified
     if (result.deletedCount > 0) {
       const deletedBooking = await BookingModel.findById(_id); 
+      console.log("delete",deletedBooking)
       return res.status(200).json({
         statusCode:200,
         success: true,
-        message: 'Booking deleted successfully',
-        booking: deletedBooking,
+        message: 'Booking deleted successfully'
       });
     } else {
       return res.status(400).json({
@@ -146,42 +147,6 @@ const updateBooking = async (req, res) => {
       });
     }
   };
-
-
-//   const DeleteBookings = async (req, res) => {
-//     try {
-//         // Fetch all bookings from the database
-//         const bookings = await BookingModel.deleteOne({userId:req.user._id});
-
-//         if (!bookings || bookings.length === 0) {
-//             return res.status(404).json(
-//               { 
-//                 success: false,
-//                 StatusCode:404,
-//                 message: 'No bookings available' 
-//               });
-//         }
-
-        
-//         res.status(200).json(
-//           {
-//             StatusCode:200,
-//             success: true,
-//             message:"Available Booking...",
-//             bookings:bookings
-//           });
-//     } catch (error) {
-        
-//         console.error(`Error fetching bookings: ${error.message}`);
-//         res.status(500).json(
-//           { 
-//             StatusCode:500,
-//             success: false,
-//             message: 'Server error' 
-//           });
-//     }
-// };
-// // 
 
 async function searchBookingsByYear(year){
   try{
