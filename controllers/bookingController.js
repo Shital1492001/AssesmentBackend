@@ -1,5 +1,4 @@
 const BookingModel = require('../models/Booking'); 
-const moment = require('moment');
 
 const getAllBookings = async (req, res) => {
     try {
@@ -9,8 +8,8 @@ const getAllBookings = async (req, res) => {
         if (!bookings || bookings.length === 0) {
             return res.status(404).json(
               { 
-                success: false,
                 StatusCode:404,
+                success: false,
                 message: 'No bookings available',
                 bookings:bookings 
               });
@@ -147,58 +146,66 @@ const updateBooking = async (req, res) => {
     }
   };
 
-//   const getWeeklyStats = async (req, res) => {
-//     try {
-//         const currentDate = moment();
-//         const weekStart = currentDate.startOf('week').toDate();
-//         const weekEnd = currentDate.endOf('week').toDate();
 
-//         const weeklyBookings = await BookingModel.find({
-//             userId: req.user._id,
-//             timeFrom: { $gte: weekStart, $lte: weekEnd },
-//         });
+const Statistics=async (req, res) => {
+  try {
+      const year = req.params.year;
+      const statsw = await getStats(year);
+      const statsm= await getStats(year);
 
-//         // Check if any bookings were found
-//         if (!weeklyBookings || weeklyBookings.length === 0) {
-//             return res.status(404).json({
-//                 message: 'No bookings found for this week',
-//                 data: [],
-//             });
-//         }
+      res.status(200).json({
+        statusCode:200,
+        success:true,
+        message:"Successfully get Statistics of weekly and Monthly",
+        statsw:statsw.weeklyStats,
+        statsm:statsm.monthlyStats,
+      });
+  } catch (error) {
+      res.status(500).json(
+        { 
+          statusCode:500,
+          success:false,
+          message: 'Error retrieving stats', error 
 
-//         res.status(200).json({
-//             message: 'Weekly bookings fetched successfully',
-//             data: weeklyBookings,
-//         });
-//     } catch (error) {
-//         console.error(`Error fetching weekly stats: ${error.message}`);
-//         return res.status(500).json({
-//             message: 'Server error',
-//             error: error.message,
-//         });
-//     }
-// };
+        });
+  }
+};
+//  
+const getStats = async (year) => {
+  // console.log("start")
+  const startOfYear = new Date(`${year}-01-01`);
+  const endOfYear = new Date(`${year}-12-31`);
+
+  const weeklyStats = await BookingModel.aggregate([
+      { 
+          $match: { timeFrom: { $gte: startOfYear, $lte: endOfYear } } 
+      },
+      {
+          $group: {
+              _id: { $week: "$timeFrom" }, // Group by week
+              totalBookings: { $sum: 1 },
+              totalAmount: { $sum: "$totalAmount" },
+          },
+      },
+      { $sort: { "_id": 1 } }
+  ]);
+
+  const monthlyStats = await BookingModel.aggregate([
+      { 
+          $match: { timeFrom: { $gte: startOfYear, $lte: endOfYear } } 
+      },
+      {
+          $group: {
+              _id: { $month: "$timeFrom" }, // Group by month
+              totalBookings: { $sum: 1 },
+              totalAmount: { $sum: "$totalAmount" },
+          },
+      },
+      { $sort: { "_id": 1 } }
+  ]);
+
+  return { weeklyStats, monthlyStats };
+}
 
 
-// const getMonthlyStats = async (req, res) => {
-//     try {
-//         const currentDate = moment();
-//         const monthStart = currentDate.startOf('month').toDate();
-//         const monthEnd = currentDate.endOf('month').toDate();
-
-//         const monthlyBookings = await BookingModel.find({
-//             userId: req.user._id,
-//             timeFrom: { $gte: monthStart, $lte: monthEnd },
-//         });
-
-//         res.status(200).json({
-//             message: 'Monthly bookings fetched successfully',
-//             data: monthlyBookings,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Server error', error });
-//     }
-// };
-
-
-module.exports = { getAllBookings,createBooking,updateBooking,DeleteBookings };
+module.exports = { getAllBookings,createBooking,updateBooking,DeleteBookings,Statistics };

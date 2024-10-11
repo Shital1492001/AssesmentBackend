@@ -1,13 +1,13 @@
 const express = require('express');
-const { getAllBookings, createBooking, updateBooking,DeleteBookings} = require('../controllers/bookingController');
-const { protect } = require("../middlewares/authMiddleware");
+const { getAllBookings, createBooking, updateBooking,DeleteBookings,Statistics} = require('../controllers/bookingController');
+const { authorizedToken } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.route('/getall').get(protect,getAllBookings);
-router.route('/add').post(protect,createBooking);
-router.route('/update/:_id').put(protect,updateBooking);
-router.route('/delete/:_id').delete(protect,DeleteBookings);
-// router.route('/weekly').get(protect,getWeeklyStats);
-// router.route('/monthly').get(protect,getMonthlyStats);
+router.route('/getall').get(authorizedToken,getAllBookings);
+router.route('/add').post(authorizedToken,createBooking);
+router.route('/update/:_id').put(authorizedToken,updateBooking);
+router.route('/delete/:_id').delete(authorizedToken,DeleteBookings);
+router.route('/stats/:year').get(authorizedToken,Statistics)
+
 
 module.exports = router;

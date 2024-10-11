@@ -1,5 +1,26 @@
 const Slot = require('../models/Slot');
 
+
+const createSlot = async (req, res) => {
+  const { status, ratePerHour, vehicleType} = req.body;
+  const newSlot = await Slot.create({
+      status,
+      ratePerHour,
+      vehicleType,
+  });
+  console.log("new Slot:",newSlot);
+
+  res.status(201).json(
+    {
+      statusCode:201,
+      success: true,
+      message:"new newSlot:",
+      newSlot:newSlot
+    });
+};
+
+
+
 const getAllSlots = async (req, res) => {
     try {
         // Fetch all slots from the database
@@ -80,14 +101,21 @@ const searchSlots = async (req, res) => {
   //   res.status(200).json(slot);
   // });
   
+
+  // async function updateSlot(slotId){
+  //   const filter = {_id: slotId};
+  //   const update = { $set: {isAvailable: false}}
+  //   return await slotModel.updateOne(filter, update)
+  
+  // }
   const updateSlot = async (req, res) => {
     const { _id } = req.params;  
-    const updates = req.body;   
+    const updates = {$set:{status:"occupied"}};   
   
     console.log(`Received ID: ${_id}`);
     console.log(`Updates: ${JSON.stringify(updates)}`);
   
-    // Check if the slot exists
+    // // Check if the slot exists
     const slot = await Slot.findById(_id);
     
     if (!slot) {
@@ -107,6 +135,7 @@ const searchSlots = async (req, res) => {
     if (result.modifiedCount > 0) {
       
       const updatedSlot = await Slot.findById(_id); // Fetch the updated document
+      console.log("updated Slot",updatedSlot)
       return res.status(200).json({
         statusCode:200,
         success: true,
@@ -118,12 +147,14 @@ const searchSlots = async (req, res) => {
         statusCode:400,
         success: false,
         message: 'Slot not found or no changes made',
+        slot:[]
       });
     }
   };
   
   module.exports={
-  
+    
+    createSlot,
     getAllSlots,
     searchSlots,
     // getSingleSlot,
