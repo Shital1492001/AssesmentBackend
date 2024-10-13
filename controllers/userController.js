@@ -17,8 +17,8 @@ if(!findUser){
         message:"User registered successfully.",
         _id: newUser._id,
        username: newUser.username,
-      email: newUser.email,
-      // token: generateToken(newUser._id),
+       email: newUser.email
+      
       });
     }else {
       console.log("Registration Failed....")

@@ -10,7 +10,12 @@ const validateRegisterUser = (req, res, next) => {
 
   const { error } = schema.validate(req.body);
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    return res.status(400).json(
+      { 
+        statusCode:400,
+        success:false,
+        error: error.details[0].message 
+      });
   }
 
   next(); //call next middleware
@@ -25,7 +30,12 @@ const validateLoginUser = (req, res, next) => {
 
   const { error } = schema.validate(req.body);
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    return res.status(400).json(
+      { 
+        statusCode:400,
+        success:false,
+        error: error.details[0].message 
+      });
   }
 
   next(); 

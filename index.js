@@ -6,7 +6,7 @@ require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 const authRouter = require("./routes/userRoutes");
 const slotRouter= require("./routes/slotRoutes");
-const bookingRouter = require("./routes/bookingRoutes")
+const bookingRouter = require("./routes/bookingRoutes");
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const cors = require('cors');
 dbConnect.config;

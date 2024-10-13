@@ -1,8 +1,3 @@
-
-// import jwt from "jsonwebtoken";
-// import User from "../models/userModel.js";
-// import asyncHandler from "express-async-handler";
-
 const jwt = require("jsonwebtoken")
 const User = require("../models/User")
 
@@ -23,14 +18,21 @@ const authorizedToken = async (req, res, next) => {
 
       next();
     } catch (error) {
-      res.status(401);
-      throw new Error("Not authorized, token failed");
+      console.log("Token Verification Error....!");
+      res.status(401).json(
+        {
+          statusCode:401,
+          message:"Not authorized, token failed"
+        }
+      );
     }
   }
 
   if (!token) {
-    res.status(401);
-    throw new Error("Not authorized, no token");
+    res.status(401).json({
+      statusCode:401,
+      message:"Not authorized, no token"
+    });
   }
 };
 

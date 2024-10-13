@@ -61,7 +61,7 @@ const createBooking = async (req, res) => {
 
 const updateBooking = async (req, res) => {
     const { _id } = req.params;  
-    const updates = req.body;   
+    const updates = {$set:{paymentStatus:"Completed"}};   
   
     console.log(`Received ID: ${_id}`);
     console.log(`Updates: ${JSON.stringify(updates)}`);
@@ -83,7 +83,6 @@ const updateBooking = async (req, res) => {
   
     console.log(`Update result: ${JSON.stringify(result)}`);
   
-    // Check if any document was modified
     if (result.modifiedCount > 0) {
       const updatedBooking = await BookingModel.findById(_id); 
       return res.status(200).json({
@@ -97,6 +96,7 @@ const updateBooking = async (req, res) => {
         statusCode:400,
         success: false,
         message: 'Booking not found or no changes made',
+        booking:[]
       });
     }
   };
@@ -126,12 +126,12 @@ const updateBooking = async (req, res) => {
     const result = await BookingModel.deleteOne({ _id}, deletes);
     console.log(result);
   
-    console.log(`Delete result: ${JSON.stringify(result)}`);
+    console.log(`Delete result: ${JSON.stringify(result)}`);    //convert javascript value to json string
     console.log(result.deletedCount)
-    // Check if any document was modified
+    
     if (result.deletedCount > 0) {
       const deletedBooking = await BookingModel.findById(_id); 
-      console.log("delete",deletedBooking)
+      // console.log("delete",deletedBooking)
       return res.status(200).json({
         statusCode:200,
         success: true,
@@ -146,30 +146,6 @@ const updateBooking = async (req, res) => {
     }
   };
 
-
-const Statistics=async (req, res) => {
-  try {
-      const year = req.params.year;
-      const statsw = await getStats(year);
-      const statsm= await getStats(year);
-
-      res.status(200).json({
-        statusCode:200,
-        success:true,
-        message:"Successfully get Statistics of weekly and Monthly",
-        statsw:statsw.weeklyStats,
-        statsm:statsm.monthlyStats,
-      });
-  } catch (error) {
-      res.status(500).json(
-        { 
-          statusCode:500,
-          success:false,
-          message: 'Error retrieving stats', error 
-
-        });
-  }
-};
 //  
 const getStats = async (year) => {
   // console.log("start")
@@ -206,6 +182,31 @@ const getStats = async (year) => {
 
   return { weeklyStats, monthlyStats };
 }
+
+
+const Statistics=async (req, res) => {
+  try {
+      const year = req.params.year;
+      const statsw = await getStats(year);
+      const statsm= await getStats(year);
+
+      res.status(200).json({
+        statusCode:200,
+        success:true,
+        message:"Successfully get Statistics of weekly and Monthly",
+        statsw:statsw.weeklyStats,
+        statsm:statsm.monthlyStats,
+      });
+  } catch (error) {
+      res.status(500).json(
+        { 
+          statusCode:500,
+          success:false,
+          message: 'Error retrieving Statistics', error 
+
+        });
+  }
+};
 
 
 module.exports = { getAllBookings,createBooking,updateBooking,DeleteBookings,Statistics };

@@ -61,8 +61,7 @@ const searchSlots = async (req, res) => {
     
     const regexPattern = new RegExp(vehicleType, 'i');
   
-    const slots = await Slot.find({ vehicleType: { $regex: regexPattern } }).exec();   ///.exec() returns a promise, which allows you to handle the result using .then() or await
-    //.exec() is not mandatory but useful for clarity and to guarantee you're working with a promise when executing Mongoose queries.
+    const slots = await Slot.find({ vehicleType: { $regex: regexPattern } })  
   
     if (!slots || slots.length === 0) {
       return res.status(404).json(
@@ -115,7 +114,7 @@ const searchSlots = async (req, res) => {
     console.log(`Received ID: ${_id}`);
     console.log(`Updates: ${JSON.stringify(updates)}`);
   
-    // // Check if the slot exists
+    //Check if the slot exists
     const slot = await Slot.findById(_id);
     
     if (!slot) {
