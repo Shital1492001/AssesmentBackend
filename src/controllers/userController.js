@@ -44,7 +44,7 @@ const loginUser= async (req,res)=>{
 
   if (user && (await user.matchPassword(password))) {
     res.status(200).json({
-        statusCode: 200, // Adding the statusCode to the JSON response
+        statusCode: 200, 
         success: true,
         message: "Login successful.",
         _id: user._id,

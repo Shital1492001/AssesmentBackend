@@ -2,7 +2,7 @@ const BookingModel = require('../models/Booking');
 
 const getAllBookings = async (req, res) => {
     try {
-        // Fetch all bookings from the database
+        
         const bookings = await BookingModel.find({userId:req.user._id});
 
         if (!bookings || bookings.length === 0) {
@@ -35,7 +35,7 @@ const getAllBookings = async (req, res) => {
     }
 };
 
-// Create a new booking
+
 const createBooking = async (req, res) => {
     const { userId, slotId, vehicleType, timeFrom, timeTo, totalAmount } = req.body;
     const newBooking = await BookingModel.create({

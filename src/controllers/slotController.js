@@ -23,7 +23,6 @@ const createSlot = async (req, res) => {
 
 const getAllSlots = async (req, res) => {
     try {
-        // Fetch all slots from the database
         const slots = await Slot.find({});
 
         if (!slots || slots.length === 0) {
@@ -54,7 +53,7 @@ const getAllSlots = async (req, res) => {
     }
 };
 
-  // Search slots by vehicle type
+  
 const searchSlots = async (req, res) => {
     const { vehicleType } = req.params; 
   
@@ -101,12 +100,6 @@ const searchSlots = async (req, res) => {
   // });
   
 
-  // async function updateSlot(slotId){
-  //   const filter = {_id: slotId};
-  //   const update = { $set: {isAvailable: false}}
-  //   return await slotModel.updateOne(filter, update)
-  
-  // }
   const updateSlot = async (req, res) => {
     const { _id } = req.params;  
     const updates = {$set:{status:"occupied"}};   
@@ -114,7 +107,7 @@ const searchSlots = async (req, res) => {
     console.log(`Received ID: ${_id}`);
     console.log(`Updates: ${JSON.stringify(updates)}`);
   
-    //Check if the slot exists
+  
     const slot = await Slot.findById(_id);
     
     if (!slot) {
